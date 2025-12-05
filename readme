@@ -1,0 +1,230 @@
+🚀 Features
+👤 User Features
+
+Register & Login
+
+Update Profile
+
+Upload Profile Photo
+
+Vote Once
+
+View Voting Results
+
+🛠️ Admin Features
+
+Add / Edit / Delete Candidates
+
+Manage Users
+
+View Contact Submissions
+
+Election Analytics Dashboard
+
+🖼️ Image Upload Support
+
+Candidate Photos → uploads/candidates/
+
+User Profile Photos → uploads/profiles/
+
+📦 Installation Requirements
+
+Install the following:
+VS Code
+XAMPP (Apache + MySQL)
+phpMyAdmin
+
+⚙️ Setup Instructions
+Enable:
+
+Apache
+
+MySQL
+
+3️⃣ Create Database in phpMyAdmin
+
+Go to:
+
+http://localhost/phpmyadmin
+
+
+Create database:
+
+voting_system
+
+4️⃣ Import SQL
+
+Copy the SQL in Database Structure (below) and paste into phpMyAdmin → SQL tab.
+
+📁 Required Folders
+
+Make sure these folders exist:
+
+uploads/candidates/
+uploads/profiles/
+
+
+Add default image:
+
+assets/default-profile.jpg
+
+🔧 Database Configuration
+
+Edit file:
+
+config/db.php
+
+
+Paste this:
+
+<?php
+$host = 'localhost';
+$dbname = 'voting_system';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+?>
+
+🗄️ Database Structure (SQL Schema)
+
+Paste this SQL into phpMyAdmin:
+
+-- Create database
+CREATE DATABASE IF NOT EXISTS `voting_system`
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_general_ci;
+
+USE `voting_system`;
+
+-- =========================
+-- 1) users
+-- =========================
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `mobile` varchar(10) DEFAULT NULL,
+  `gender` enum('Male','Female','Other') DEFAULT NULL,
+  `dob` date DEFAULT NULL,
+  `nationality` varchar(22) DEFAULT NULL,
+  `profile_photo` varchar(255) DEFAULT NULL,
+  `description` varchar(255) NOT NULL,
+  `has_voted` tinyint(1) DEFAULT 0,
+  `is_admin_dba` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE (`username`),
+  UNIQUE (`email`),
+  UNIQUE (`mobile`)
+);
+
+-- =========================
+-- 2) candidates
+-- =========================
+CREATE TABLE `candidates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `party` varchar(100) NOT NULL,
+  `bio` text NOT NULL,
+  `photo_url` varchar(255) DEFAULT NULL,
+  `votes` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+);
+
+-- =========================
+-- 3) contacts
+-- =========================
+CREATE TABLE `contacts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `gmail` varchar(100) NOT NULL,
+  `mobile` varchar(20) NOT NULL,
+  `description` text NOT NULL,
+  `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+);
+
+-- =========================
+-- 4) elections
+-- =========================
+CREATE TABLE `elections` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `election_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `total_votes` int(11) NOT NULL,
+  `total_candidates` int(11) NOT NULL,
+  `total_voters` int(11) NOT NULL,
+  `snapshot_data` longtext,
+  PRIMARY KEY (`id`)
+);
+
+-- =========================
+-- 5) votes
+-- =========================
+CREATE TABLE `votes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `candidate_id` int(11) NOT NULL,
+  `voted_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `candidate_id` (`candidate_id`),
+
+  CONSTRAINT `votes_ibfk_1`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    ON DELETE CASCADE,
+
+  CONSTRAINT `votes_ibfk_2`
+    FOREIGN KEY (`candidate_id`) REFERENCES `candidates` (`id`)
+    ON DELETE CASCADE
+);
+
+▶️ How to Run the Project
+
+Move project folder into:
+
+C:\xampp\htdocs\
+
+
+Start Apache & MySQL
+
+Open browser and visit:
+
+http://localhost/voting-system/
+
+
+Register → Login → Vote → View Results
+
+📂 Project Folder Structure
+voting-system/
+│
+├── assets/
+│   └── default-profile.jpg
+│
+├── uploads/
+│   ├── candidates/
+│   └── profiles/
+│
+├── config/
+│   └── db.php
+│
+├── admin/
+├── pages/
+├── index.php
+└── README.md
+
+🤝 Contributing
+
+Pull requests are welcome.
+Feel free to open an issue for bugs or improvements.
+
+📄 License
+
+This project is licensed under the MIT License.
