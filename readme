@@ -2,17 +2,13 @@
 
 > **Graduation Project** — developed as a final-year academic project to demonstrate a secure, full-stack web application for managing digital elections.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge)](https://voting-system.ct.ws/)
-[![PHP](https://img.shields.io/badge/PHP-Backend-777BB4?style=for-the-badge&logo=php)](https://php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql)](https://mysql.com)
-
 ---
 
 ## 📌 Project Overview
 
 The **Online Voting System** is a secure, web-based election management platform built with PHP and MySQL. It allows registered voters to cast their vote digitally while giving administrators full control over candidates, users, and election analytics. The system enforces a strict one-vote-per-user policy and provides real-time result tracking.
 
-**Live Demo:** [https://voting-system.ct.ws/](https://voting-system.ct.ws/)
+**Live Demo:** [https://voting-system.ct.ws/]
 
 | Role  | Username | Password     |
 |-------|----------|--------------|
