@@ -1,111 +1,112 @@
-Live:- https://voting-system.ct.ws/ 
-🚀 Features
-👤 User Features
+# 🗳️ Online Voting System
 
-Register & Login
+> **Graduation Project** — developed as a final-year academic project to demonstrate a secure, full-stack web application for managing digital elections.
 
-Update Profile
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-blue?style=for-the-badge)](https://voting-system.ct.ws/)
+[![PHP](https://img.shields.io/badge/PHP-Backend-777BB4?style=for-the-badge&logo=php)](https://php.net)
+[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql)](https://mysql.com)
 
-Upload Profile Photo
+---
 
-Vote Once
+## 📌 Project Overview
 
-View Voting Results
+The **Online Voting System** is a secure, web-based election management platform built with PHP and MySQL. It allows registered voters to cast their vote digitally while giving administrators full control over candidates, users, and election analytics. The system enforces a strict one-vote-per-user policy and provides real-time result tracking.
 
-🛠️ Admin Features
+**Live Demo:** [https://voting-system.ct.ws/](https://voting-system.ct.ws/)
 
-Add / Edit / Delete Candidates
+| Role  | Username | Password     |
+|-------|----------|--------------|
+| Admin | `admin@123` | `Admin@654321` |
+| Voter | `jyoti`     | `Jyoti@461`    |
 
-Manage Users
+---
 
-View Contact Submissions
+## ✨ Features
 
-Election Analytics Dashboard
+### 👤 Voter
+- Register and log in securely
+- Update profile information and upload a profile photo
+- Cast a vote (enforced once per user)
+- View live voting results
 
-🖼️ Image Upload Support
+### 🛠️ Administrator
+- Add, edit, and delete candidates
+- Manage registered users
+- View and respond to contact form submissions
+- Access an election analytics dashboard
 
-Candidate Photos → uploads/candidates/
+### 🖼️ Image Uploads
+- Candidate photos stored in `uploads/candidates/`
+- Voter profile photos stored in `uploads/profiles/`
 
-User Profile Photos → uploads/profiles/
+---
 
-📦 Installation Requirements
+## 🛠️ Tech Stack
 
-Install the following:
-VS Code
-XAMPP (Apache + MySQL)
-phpMyAdmin
+| Layer     | Technology         |
+|-----------|--------------------|
+| Frontend  | HTML, CSS, JavaScript |
+| Backend   | PHP (PDO)          |
+| Database  | MySQL              |
+| Server    | Apache via XAMPP   |
 
-⚙️ Setup Instructions
-Enable:
+---
 
-Apache
+## ⚙️ Installation & Setup
 
-MySQL
+### Prerequisites
 
-3️⃣ Create Database in phpMyAdmin
+Install the following tools before proceeding:
 
-Go to:
+- [VS Code](https://code.visualstudio.com/) — code editor
+- [XAMPP](https://www.apachefriends.org/) — local server (Apache + MySQL)
+- [phpMyAdmin](https://www.phpmyadmin.net/) — included with XAMPP
 
-http://localhost/phpmyadmin
+---
 
+### Step 1 — Start XAMPP Services
 
-Create database:
+Open the XAMPP Control Panel and start:
+- **Apache**
+- **MySQL**
 
+---
+
+### Step 2 — Clone the Project
+
+Place the project folder inside the XAMPP web root:
+
+```
+C:\xampp\htdocs\voting-system\
+```
+
+---
+
+### Step 3 — Create the Database
+
+1. Navigate to [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+2. Create a new database named:
+
+```
 voting_system
+```
 
-4️⃣ Import SQL
+---
 
-Copy the SQL in Database Structure (below) and paste into phpMyAdmin → SQL tab.
+### Step 4 — Import the SQL Schema
 
-📁 Required Folders
+Go to the `voting_system` database → click the **SQL** tab → paste and run the schema below:
 
-Make sure these folders exist:
+<details>
+<summary>📄 Click to expand SQL Schema</summary>
 
-uploads/candidates/
-uploads/profiles/
-
-
-Add default image:
-
-assets/default-profile.jpg
-
-🔧 Database Configuration
-
-Edit file:
-
-config/db.php
-
-
-Paste this:
-
-<?php
-$host = 'localhost';
-$dbname = 'voting_system';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
-?>
-
-🗄️ Database Structure (SQL Schema)
-
-Paste this SQL into phpMyAdmin:
-
--- Create database
+```sql
 CREATE DATABASE IF NOT EXISTS `voting_system`
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_general_ci;
 
 USE `voting_system`;
 
--- =========================
--- 1) users
--- =========================
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
@@ -126,9 +127,6 @@ CREATE TABLE `users` (
   UNIQUE (`mobile`)
 );
 
--- =========================
--- 2) candidates
--- =========================
 CREATE TABLE `candidates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -140,9 +138,6 @@ CREATE TABLE `candidates` (
   PRIMARY KEY (`id`)
 );
 
--- =========================
--- 3) contacts
--- =========================
 CREATE TABLE `contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -153,9 +148,6 @@ CREATE TABLE `contacts` (
   PRIMARY KEY (`id`)
 );
 
--- =========================
--- 4) elections
--- =========================
 CREATE TABLE `elections` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `election_date` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -166,9 +158,6 @@ CREATE TABLE `elections` (
   PRIMARY KEY (`id`)
 );
 
--- =========================
--- 5) votes
--- =========================
 CREATE TABLE `votes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -177,33 +166,72 @@ CREATE TABLE `votes` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `candidate_id` (`candidate_id`),
-
   CONSTRAINT `votes_ibfk_1`
-    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-    ON DELETE CASCADE,
-
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `votes_ibfk_2`
-    FOREIGN KEY (`candidate_id`) REFERENCES `candidates` (`id`)
-    ON DELETE CASCADE
+    FOREIGN KEY (`candidate_id`) REFERENCES `candidates` (`id`) ON DELETE CASCADE
 );
+```
 
-▶️ How to Run the Project
+</details>
 
-Move project folder into:
+---
 
-C:\xampp\htdocs\
+### Step 5 — Configure the Database Connection
 
+Edit `config/db.php` with the following:
 
-Start Apache & MySQL
+```php
+<?php
+$host     = 'localhost';
+$dbname   = 'voting_system';
+$username = 'root';
+$password = '';
 
-Open browser and visit:
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
+?>
+```
 
+---
+
+### Step 6 — Create Required Folders & Assets
+
+Ensure the following directories exist in the project root:
+
+```
+uploads/
+├── candidates/
+└── profiles/
+```
+
+Also place a default avatar at:
+
+```
+assets/default-profile.jpg
+```
+
+---
+
+### Step 7 — Run the Application
+
+Open your browser and visit:
+
+```
 http://localhost/voting-system/
+```
 
+Then: **Register → Log In → Vote → View Results**
 
-Register → Login → Vote → View Results
+---
 
-📂 Project Folder Structure
+## 📁 Project Structure
+
+```
 voting-system/
 │
 ├── assets/
@@ -220,14 +248,22 @@ voting-system/
 ├── pages/
 ├── index.php
 └── README.md
+```
 
-🤝 Contributing
+---
 
-Pull requests are welcome.
-Feel free to open an issue for bugs or improvements.
+## 🤝 Contributing
 
-📄 License
+Contributions, bug reports, and feature suggestions are welcome. Feel free to open an issue or submit a pull request.
 
-This project is licensed under the MIT License.
-admin:-- admin@123
-pass:--  Admin@1234
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  Made with ❤️ as a Graduation Project
+</p>
