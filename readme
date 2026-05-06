@@ -1,76 +1,113 @@
+<div align="center">
+
 # 🗳️ Online Voting System
 
-> **Graduation Project** — developed as a final-year academic project to demonstrate a secure, full-stack web application for managing digital elections.
+### *Final Year Graduation Project*
+
+> A secure, full-stack digital election platform — built to demonstrate real-world web development skills across authentication, role-based access control, database design, and analytics.
+
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Visit%20Site-0A66C2?style=for-the-badge)](https://voting-system.ct.ws/)
+
+</div>
 
 ---
 
-## 📌 Project Overview
+## 📌 Overview
 
-The **Online Voting System** is a secure, web-based election management platform built with PHP and MySQL. It allows registered voters to cast their vote digitally while giving administrators full control over candidates, users, and election analytics. The system enforces a strict one-vote-per-user policy and provides real-time result tracking.
+The **Online Voting System** is a secure, web-based election management platform built with PHP and MySQL. It allows registered voters to cast ballots digitally while giving administrators complete control over candidates, users, and election analytics.
 
-**Live Demo:** [https://voting-system.ct.ws/]
+Key design goals:
+- **One vote per user** — enforced at both application and database level
+- **Role-based access** — separate interfaces for voters and administrators
+- **Real-time results** — live vote counts with election analytics
+- **Image support** — candidate and voter profile photo uploads
 
-| Role  | Username | Password     |
-|-------|----------|--------------|
-| Admin | `admin@123` | `Admin@654321` |
-| Voter | `jyoti`     | `Jyoti@461 `    |
+**🔗 Live:** [https://voting-system.ct.ws/](https://voting-system.ct.ws/)
+
+| Role | Username | Password |
+|------|----------|----------|
+| 👑 Admin | `admin@123` | `Admin@654321` |
+| 🗳️ Voter | `jyoti` | `Jyoti@461` |
+
+> ⚠️ **Note:** These are demo credentials for evaluation purposes only. Rotate all credentials before any production deployment.
 
 ---
 
 ## ✨ Features
 
-### 👤 Voter
-- Register and log in securely
-- Update profile information and upload a profile photo
-- Cast a vote (enforced once per user)
-- View live voting results
+### 🗳️ Voter Portal
+- Secure registration and login
+- Update profile details and upload a profile photo
+- Cast a vote — strictly enforced once per registered user
+- View live voting results after voting
 
-### 🛠️ Administrator
-- Add, edit, and delete candidates
-- Manage registered users
-- View and respond to contact form submissions
-- Access an election analytics dashboard
+### 🛠️ Admin Dashboard
+- Add, edit, and delete election candidates (with photo upload)
+- Manage registered voter accounts
+- View all contact form submissions
+- Election analytics dashboard with vote summaries and snapshots
 
 ### 🖼️ Image Uploads
-- Candidate photos stored in `uploads/candidates/`
-- Voter profile photos stored in `uploads/profiles/`
+- Candidate photos → `uploads/candidates/`
+- Voter profile photos → `uploads/profiles/`
 
 ---
 
-## 🛠️ Tech Stack
+## 🧰 Tech Stack
 
-| Layer     | Technology         |
-|-----------|--------------------|
-| Frontend  | HTML, CSS, JavaScript |
-| Backend   | PHP (PDO)          |
-| Database  | MySQL              |
-| Server    | Apache via XAMPP   |
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | HTML5, CSS3, JavaScript |
+| **Backend** | PHP with PDO (prepared statements) |
+| **Database** | MySQL 5.7+ |
+| **Server** | Apache via XAMPP |
+| **Auth** | PHP Sessions |
 
 ---
 
-## ⚙️ Installation & Setup
+## 📁 Project Structure
+
+```
+voting-system/
+│
+├── admin/                    # Admin-only pages and logic
+├── pages/                    # Voter-facing pages
+├── config/
+│   └── db.php                # Database connection (PDO)
+├── uploads/
+│   ├── candidates/           # Candidate profile images
+│   └── profiles/             # Voter profile images
+├── assets/
+│   └── default-profile.jpg   # Fallback avatar image
+└── index.php                 # Application entry point
+```
+
+---
+
+## ⚙️ Local Setup Guide
 
 ### Prerequisites
 
-Install the following tools before proceeding:
-
-- [VS Code](https://code.visualstudio.com/) — code editor
-- [XAMPP](https://www.apachefriends.org/) — local server (Apache + MySQL)
-- [phpMyAdmin](https://www.phpmyadmin.net/) — included with XAMPP
-
----
-
-### Step 1 — Start XAMPP Services
-
-Open the XAMPP Control Panel and start:
-- **Apache**
-- **MySQL**
+| Tool | Purpose | Download |
+|------|---------|----------|
+| VS Code | Code editor | [Download](https://code.visualstudio.com/) |
+| XAMPP | Apache + MySQL local server | [Download](https://www.apachefriends.org/) |
+| phpMyAdmin | Database GUI (bundled with XAMPP) | — |
 
 ---
 
-### Step 2 — Clone the Project
+### Step 1 — Start XAMPP
 
-Place the project folder inside the XAMPP web root:
+Open the XAMPP Control Panel and enable:
+
+- ✅ Apache
+- ✅ MySQL
+
+---
+
+### Step 2 — Place the Project
+
+Copy the project folder into the XAMPP web root:
 
 ```
 C:\xampp\htdocs\voting-system\
@@ -80,90 +117,95 @@ C:\xampp\htdocs\voting-system\
 
 ### Step 3 — Create the Database
 
-1. Navigate to [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
-2. Create a new database named:
-
-```
-voting_system
-```
+1. Open [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+2. Click **New** and create a database named `voting_system`
 
 ---
 
 ### Step 4 — Import the SQL Schema
 
-Go to the `voting_system` database → click the **SQL** tab → paste and run the schema below:
+Select the `voting_system` database → click the **SQL** tab → paste and run the schema below:
 
 <details>
-<summary>📄 Click to expand SQL Schema</summary>
+<summary>📄 Click to view full SQL Schema</summary>
 
 ```sql
+-- ============================================================
+-- Online Voting System — Database Schema
+-- ============================================================
+
 CREATE DATABASE IF NOT EXISTS `voting_system`
   DEFAULT CHARACTER SET utf8mb4
   COLLATE utf8mb4_general_ci;
 
 USE `voting_system`;
 
+-- Users (voters + admins)
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `mobile` varchar(10) DEFAULT NULL,
-  `gender` enum('Male','Female','Other') DEFAULT NULL,
-  `dob` date DEFAULT NULL,
-  `nationality` varchar(22) DEFAULT NULL,
-  `profile_photo` varchar(255) DEFAULT NULL,
-  `description` varchar(255) NOT NULL,
-  `has_voted` tinyint(1) DEFAULT 0,
-  `is_admin_dba` tinyint(1) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id`            INT(11)                       NOT NULL AUTO_INCREMENT,
+  `username`      VARCHAR(50)                   NOT NULL,
+  `password`      VARCHAR(255)                  NOT NULL,
+  `email`         VARCHAR(100)                  NOT NULL,
+  `mobile`        VARCHAR(10)                   DEFAULT NULL,
+  `gender`        ENUM('Male','Female','Other') DEFAULT NULL,
+  `dob`           DATE                          DEFAULT NULL,
+  `nationality`   VARCHAR(22)                   DEFAULT NULL,
+  `profile_photo` VARCHAR(255)                  DEFAULT NULL,
+  `description`   VARCHAR(255)                  NOT NULL,
+  `has_voted`     TINYINT(1)                    DEFAULT 0,
+  `is_admin_dba`  TINYINT(1)                    DEFAULT 0,
+  `created_at`    TIMESTAMP                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE (`username`),
-  UNIQUE (`email`),
-  UNIQUE (`mobile`)
+  UNIQUE KEY `uq_username` (`username`),
+  UNIQUE KEY `uq_email`    (`email`),
+  UNIQUE KEY `uq_mobile`   (`mobile`)
 );
 
+-- Candidates
 CREATE TABLE `candidates` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `party` varchar(100) NOT NULL,
-  `bio` text NOT NULL,
-  `photo_url` varchar(255) DEFAULT NULL,
-  `votes` int(11) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id`         INT(11)      NOT NULL AUTO_INCREMENT,
+  `name`       VARCHAR(100) NOT NULL,
+  `party`      VARCHAR(100) NOT NULL,
+  `bio`        TEXT         NOT NULL,
+  `photo_url`  VARCHAR(255) DEFAULT NULL,
+  `votes`      INT(11)      DEFAULT 0,
+  `created_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 );
 
+-- Contact form submissions
 CREATE TABLE `contacts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `gmail` varchar(100) NOT NULL,
-  `mobile` varchar(20) NOT NULL,
-  `description` text NOT NULL,
-  `submitted_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id`           INT(11)      NOT NULL AUTO_INCREMENT,
+  `name`         VARCHAR(100) NOT NULL,
+  `email`        VARCHAR(100) NOT NULL,
+  `mobile`       VARCHAR(20)  NOT NULL,
+  `description`  TEXT         NOT NULL,
+  `submitted_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 );
 
+-- Election snapshots / analytics
 CREATE TABLE `elections` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `election_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `total_votes` int(11) NOT NULL,
-  `total_candidates` int(11) NOT NULL,
-  `total_voters` int(11) NOT NULL,
-  `snapshot_data` longtext,
+  `id`               INT(11)   NOT NULL AUTO_INCREMENT,
+  `election_date`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total_votes`      INT(11)   NOT NULL,
+  `total_candidates` INT(11)   NOT NULL,
+  `total_voters`     INT(11)   NOT NULL,
+  `snapshot_data`    LONGTEXT,
   PRIMARY KEY (`id`)
 );
 
+-- Vote records (one per user, enforced via FK + application logic)
 CREATE TABLE `votes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `candidate_id` int(11) NOT NULL,
-  `voted_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id`           INT(11)   NOT NULL AUTO_INCREMENT,
+  `user_id`      INT(11)   NOT NULL,
+  `candidate_id` INT(11)   NOT NULL,
+  `voted_at`     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `candidate_id` (`candidate_id`),
+  KEY `fk_user`      (`user_id`),
+  KEY `fk_candidate` (`candidate_id`),
   CONSTRAINT `votes_ibfk_1`
-    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`)      REFERENCES `users`      (`id`) ON DELETE CASCADE,
   CONSTRAINT `votes_ibfk_2`
     FOREIGN KEY (`candidate_id`) REFERENCES `candidates` (`id`) ON DELETE CASCADE
 );
@@ -173,31 +215,36 @@ CREATE TABLE `votes` (
 
 ---
 
-### Step 5 — Configure the Database Connection
+### Step 5 — Configure Database Connection
 
-Edit `config/db.php` with the following:
+Edit `config/db.php`:
 
 ```php
 <?php
-$host     = 'localhost';
-$dbname   = 'voting_system';
-$username = 'root';
-$password = '';
+$host   = 'localhost';
+$dbname = 'voting_system';
+$user   = 'root';
+$pass   = '';  // Update if you have set a MySQL root password
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+        $user,
+        $pass
+    );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    die("Connection failed: " . $e->getMessage());
 }
 ?>
 ```
 
 ---
 
-### Step 6 — Create Required Folders & Assets
+### Step 6 — Create Upload Directories
 
-Ensure the following directories exist in the project root:
+Make sure these folders exist in the project root:
 
 ```
 uploads/
@@ -205,7 +252,7 @@ uploads/
 └── profiles/
 ```
 
-Also place a default avatar at:
+Add a fallback avatar at:
 
 ```
 assets/default-profile.jpg
@@ -213,53 +260,52 @@ assets/default-profile.jpg
 
 ---
 
-### Step 7 — Run the Application
+### Step 7 — Launch the App
 
-Open your browser and visit:
+Open your browser and go to:
 
 ```
 http://localhost/voting-system/
 ```
 
-Then: **Register → Log In → Vote → View Results**
+**Flow:** Register → Log In → Cast Vote → View Results
 
 ---
 
-## 📁 Project Structure
+## 🔐 Security Notes
 
-```
-voting-system/
-│
-├── assets/
-│   └── default-profile.jpg
-│
-├── uploads/
-│   ├── candidates/
-│   └── profiles/
-│
-├── config/
-│   └── db.php
-│
-├── admin/
-├── pages/
-├── index.php
-└── README.md
-```
+- Passwords must be hashed using `password_hash()` and verified with `password_verify()`
+- All queries use **PDO prepared statements** to prevent SQL injection
+- Voting integrity is enforced via the `has_voted` flag on the `users` table
+- Admin access is gated by `is_admin_dba` — never expose this via the public registration form
+
+> Before going live: enable HTTPS, restrict phpMyAdmin access, and rotate all default credentials.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, bug reports, and feature suggestions are welcome. Feel free to open an issue or submit a pull request.
+Contributions are welcome! To get started:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Commit your changes: `git commit -m "feat: describe your change"`
+4. Push and open a Pull Request
+
+Please open an issue first to discuss major changes.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE) — free to use, modify, and distribute with attribution.
 
 ---
 
-<p align="center">
-  Made with ❤️ as a Graduation Project
-</p>
+<div align="center">
+
+**Built with ❤️ as a Final Year Graduation Project**
+
+*Demonstrating full-stack development with PHP · MySQL · Apache*
+
+</div>
